@@ -1,0 +1,17 @@
+# Ignore file extensions
+
+## Windows Sandbox config files
+*.wsb
+
+## Archive files
+*.[oa]
+
+## Executable files
+*.exe
+*.msi
+
+/private-share/files/*
+!/private-share/files/README.md
+
+/public-share/*
+!/public-share/README.md

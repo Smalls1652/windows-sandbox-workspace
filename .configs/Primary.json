@@ -1,0 +1,17 @@
+{
+    "mappedFolders": [
+        {
+            "hostFolder": "{{ DefaultPrivateShare }}",
+            "sandboxFolder": "{{ SandboxDesktop }}\\private",
+            "readOnly": true
+        },
+        {
+            "hostFolder": "{{ DefaultPublicShare }}",
+            "sandboxFolder": "{{ SandboxDesktop }}\\public",
+            "readOnly": false
+        }
+    ],
+    "logonCommands": [
+        "cmd /c start /wait /max powershell.exe -ExecutionPolicy Bypass -File C:\\Users\\WDAGUtilityAccount\\Desktop\\private\\scripts\\Start-SandboxConfig.ps1"
+    ]
+}
