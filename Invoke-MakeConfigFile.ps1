@@ -7,8 +7,8 @@ param(
 $scriptPath = $PSScriptRoot
 
 $configsDirPath = [System.IO.Path]::Combine($scriptPath, ".configs\")
-$sharedFolderPath = [System.IO.Path]::Combine($scriptPath, "shared\")
-$dropboxFolderPath = [System.IO.Path]::Combine($scriptPath, "drop-box\")
+$privateShareFolderPath = [System.IO.Path]::Combine($scriptPath, "private-share\")
+$publicShareFolderPath = [System.IO.Path]::Combine($scriptPath, "public-share\")
 
 $configFileOutPath = [System.IO.Path]::Combine($scriptPath, "$($ConfigName).wsb")
 
@@ -16,12 +16,12 @@ $variableRegex = [System.Text.RegularExpressions.Regex]::new("(?'variableObject'
 
 $variableMappings = @(
     [pscustomobject]@{
-        "VariableName" = "DefaultSharedFolder";
-        "Content"      = ($sharedFolderPath.Substring(0, ($sharedFolderPath.Length - 1)));
+        "VariableName" = "DefaultPrivateShare";
+        "Content"      = ($privateShareFolderPath.Substring(0, ($privateShareFolderPath.Length - 1)));
     },
     [pscustomobject]@{
-        "VariableName" = "DefaultDropBoxFolder";
-        "Content"      = ($dropboxFolderPath.Substring(0, ($dropboxFolderPath.Length - 1)));
+        "VariableName" = "DefaultPublicShare";
+        "Content"      = ($publicShareFolderPath.Substring(0, ($publicShareFolderPath.Length - 1)));
     },
     [pscustomobject]@{
         "VariableName" = "SandboxDesktop";
@@ -124,7 +124,162 @@ switch (($null -ne $configData.logonCommands)) {
     }
 }
 
-# Append the 'MappedFolders' and 'LogonCommand' elements to the 'Configuration' element
+switch (($null -ne $configData.networking)) {
+    $true {
+        $networkingElement = $xmlObj.CreateElement("Networking")
+
+        switch ($configData.networking) {
+            $true {
+                $null = $networkingElement.InnerText = "Default"
+                break
+            }
+
+            Default {
+                $null = $networkingElement.InnerText = "Disable"
+                break
+            }
+        }
+
+        $null = $configElement.AppendChild($networkingElement)
+        break
+    }
+}
+
+switch (($null -ne $configData.vGpu)) {
+    $true {
+        $vGpuElement = $xmlObj.CreateElement("vGPU")
+
+        switch ($configData.vGpu) {
+            $true {
+                $null = $vGpuElement.InnerText = "Enable"
+                break
+            }
+
+            Default {
+                $null = $vGpuElement.InnerText = "Disable"
+                break
+            }
+        }
+
+        $null = $configElement.AppendChild($vGpuElement)
+        break
+    }
+}
+
+switch (($null -ne $configData.audioInput)) {
+    $true {
+        $audioInputElement = $xmlObj.CreateElement("AudioInput")
+
+        switch ($configData.audioInput) {
+            $true {
+                $null = $audioInputElement.InnerText = "Enable"
+                break
+            }
+
+            Default {
+                $null = $audioInputElement.InnerText = "Disable"
+                break
+            }
+        }
+
+        $null = $configElement.AppendChild($audioInputElement)
+        break
+    }
+}
+
+switch (($null -ne $configData.videoInput)) {
+    $true {
+        $videoInputElement = $xmlObj.CreateElement("VideoInput")
+
+        switch ($configData.videoInput) {
+            $true {
+                $null = $videoInputElement.InnerText = "Enable"
+                break
+            }
+
+            Default {
+                $null = $videoInputElement.InnerText = "Disable"
+                break
+            }
+        }
+
+        $null = $configElement.AppendChild($videoInputElement)
+        break
+    }
+}
+
+switch (($null -ne $configData.protectedClient)) {
+    $true {
+        $protectedClientElement = $xmlObj.CreateElement("ProtectedClient")
+
+        switch ($configData.protectedClient) {
+            $true {
+                $null = $protectedClientElement.InnerText = "Enable"
+                break
+            }
+
+            Default {
+                $null = $protectedClientElement.InnerText = "Disable"
+                break
+            }
+        }
+
+        $null = $configElement.AppendChild($protectedClientElement)
+        break
+    }
+}
+
+switch (($null -ne $configData.printerRedirection)) {
+    $true {
+        $printerRedirectionElement = $xmlObj.CreateElement("PrinterRedirection")
+
+        switch ($configData.printerRedirection) {
+            $true {
+                $null = $printerRedirectionElement.InnerText = "Enable"
+                break
+            }
+
+            Default {
+                $null = $printerRedirectionElement.InnerText = "Disable"
+                break
+            }
+        }
+
+        $null = $configElement.AppendChild($printerRedirectionElement)
+        break
+    }
+}
+
+switch (($null -ne $configData.clipboardRedirection)) {
+    $true {
+        $clipboardRedirectionElement = $xmlObj.CreateElement("ClipboardRedirection")
+
+        switch ($configData.clipboardRedirection) {
+            $true {
+                $null = $clipboardRedirectionElement.InnerText = "Default"
+                break
+            }
+
+            Default {
+                $null = $clipboardRedirectionElement.InnerText = "Disable"
+                break
+            }
+        }
+
+        $null = $configElement.AppendChild($clipboardRedirectionElement)
+        break
+    }
+}
+
+switch (($null -ne $configData.memoryInMB)) {
+    $true {
+        $memoryInMBElement = $xmlObj.CreateElement("MemoryInMB")
+        $memoryInMBElement.InnerText = $configData.memoryInMB
+
+        $null = $configElement.AppendChild($memoryInMBElement)
+        break
+    }
+}
 
 # Append the 'Configuration' element to the root XML document
 $null = $xmlObj.AppendChild($configElement)
