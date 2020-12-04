@@ -24,6 +24,10 @@ $variableMappings = @(
         "Content"      = ($publicShareFolderPath.Substring(0, ($publicShareFolderPath.Length - 1)));
     },
     [pscustomobject]@{
+        "VariableName" = "SandboxUserProfile";
+        "Content"      = "C:\Users\WDAGUtilityAccount"
+    },
+    [pscustomobject]@{
         "VariableName" = "SandboxDesktop";
         "Content"      = "C:\Users\WDAGUtilityAccount\Desktop"
     },
@@ -111,6 +115,12 @@ switch (($null -ne $configData.logonCommands)) {
         $logonCommandsElement = $xmlObj.CreateElement("LogonCommand")
 
         foreach ($logonCommand in  $configData.logonCommands) {
+            $commandMatches = $variableRegex.Matches($logonCommand)
+            foreach ($foundVariable in $commandMatches) {
+                $replacementContent = ($variableMappings | Where-Object { $PSItem.VariableName -eq ($foundVariable.Groups['variableName'].Value) }).Content
+                $logonCommand = $logonCommand -replace $foundVariable.Value, $replacementContent
+            }
+
             # Create 'Command' element
             $commandElement = $xmlObj.CreateElement("Command")
             $commandElement.InnerText = $logonCommand
