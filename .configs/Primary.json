@@ -12,7 +12,7 @@
         }
     ],
     "logonCommands": [
-        "cmd /c start /wait /max powershell.exe -ExecutionPolicy Bypass -File C:\\Users\\WDAGUtilityAccount\\Desktop\\private\\scripts\\Start-SandboxConfig.ps1"
+        "cmd /c start /wait /max powershell.exe -ExecutionPolicy Bypass -File {{ SandboxUserProfile }}\\Desktop\\private\\scripts\\Start-SandboxConfig.ps1"
     ],
     "networking": true
 }
